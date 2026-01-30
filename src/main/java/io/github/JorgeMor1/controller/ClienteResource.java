@@ -55,4 +55,13 @@ public class ClienteResource {
         cliente.setEmail(clienteDTO.getEmail());
         return Response.ok().build();
     }
+
+    @DELETE
+    @Path("{id}")
+    @Transactional
+    public Response deleteClient(@PathParam("id") Long id){
+        Cliente cliente = clienteRepository.findById(id);
+        clienteRepository.delete(cliente);
+        return Response.ok().build();
+    }
 }
