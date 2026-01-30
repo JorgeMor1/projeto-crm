@@ -30,7 +30,11 @@ public class ClienteResource {
         cliente.setCpf(clienteDTO.getCpf());
         cliente.setTelefoneContato(clienteDTO.getTelefoneContato());
         cliente.setEmail(clienteDTO.getEmail());
-        return Response.ok().build();
+        clienteRepository.persist(cliente);
+        return Response
+                .status(Response.Status.CREATED.getStatusCode())
+                .entity(cliente)
+                .build();
 
     }
 
