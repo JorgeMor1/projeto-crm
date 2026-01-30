@@ -1,6 +1,6 @@
 package io.github.JorgeMor1.domain;
 
-public enum StatusLeads {
+public enum StatusEventos {
     AGUARDANDO("Aguardando"),
     ANDAMENTO("Andamento"),
     FINALIZADO_SUCESSO("Sucesso"),
@@ -8,7 +8,7 @@ public enum StatusLeads {
 
     private String status;
 
-    StatusLeads(String status) {
+    StatusEventos(String status) {
         this.status = status;
     }
 
