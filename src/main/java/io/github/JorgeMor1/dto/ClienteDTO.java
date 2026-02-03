@@ -13,6 +13,9 @@ public class ClienteDTO {
         this.email = email;
     }
 
+    public ClienteDTO() {
+    }
+
     public String getNome() {
         return nome;
     }

@@ -14,6 +14,10 @@ public class Cliente {
     private String telefoneContato;
     private String email;
 
+    public Long getId() {
+        return id;
+    }
+
     public Cliente() {
     }
 
