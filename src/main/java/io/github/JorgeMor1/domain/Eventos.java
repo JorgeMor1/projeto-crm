@@ -23,6 +23,7 @@ public class Eventos {
 
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
+
     @Column(name = "status_evento", columnDefinition = "status_eventos_enum")
     private StatusEventos statusEvento = StatusEventos.AGUARDANDO;
 

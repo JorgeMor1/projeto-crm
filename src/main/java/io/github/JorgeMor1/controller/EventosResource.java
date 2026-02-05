@@ -3,18 +3,20 @@ package io.github.JorgeMor1.controller;
 import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.domain.Eventos;
 import io.github.JorgeMor1.domain.StatusEventos;
-import io.github.JorgeMor1.dto.ClienteDTO;
 import io.github.JorgeMor1.dto.EventosDTO;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
+import io.github.JorgeMor1.services.ClientService;
+import io.github.JorgeMor1.services.EventService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.List;
+import java.util.Optional;
 
 @Path("api/v1/eventos")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -26,23 +28,27 @@ public class EventosResource {
 
     private final EventosRepository eventosRepository;
 
+    private final EventService eventService;
+
+    private final ClientService clientService;
+
     @Inject
-    public EventosResource(ClienteRepository clienteRepository, EventosRepository eventosRepository) {
+    public EventosResource(ClienteRepository clienteRepository, EventosRepository eventosRepository, EventService eventService, ClientService clientService) {
         this.clienteRepository = clienteRepository;
         this.eventosRepository = eventosRepository;
+        this.eventService = eventService;
+        this.clientService = clientService;
     }
 
 
     @POST
     @Transactional
     public Response createEvent(EventosDTO eventosDTO){
-        Cliente cliente = clienteRepository.findById(eventosDTO.getClienteId());
-        Eventos eventos = new Eventos();
-        eventos.setCliente(cliente);
-        eventosRepository.persist(eventos);
+        eventService.criaEventos(eventosDTO.getClienteId());
+
         return Response
-                .status(Response.Status.CREATED.getStatusCode())
-                .entity(eventosDTO)
+                .status(Response.Status.CREATED)
+                .entity(eventosDTO) //Mudar para retornar o número do evento. Necessário criar uma classe de Response
                 .build();
 
     }
@@ -64,10 +70,11 @@ public class EventosResource {
     public Response updateStatusEvent(@PathParam("numero_evento") Integer numeroEvento, EventosDTO eventosDTO){
         /*Colocar aqui a ação de contato enviado, que será um envio de e-mail. Validar o id do usuário e o evento que será atualizado*/
         //Buscando o evento que está no banco pelo Id passado na URL;
-        Eventos eventoExistente = eventosRepository.buscaPorNumeroEvento(numeroEvento);
-        Cliente cliente = clienteRepository.findById(eventosDTO.getClienteId());
-        eventoExistente.setCliente(cliente);
-        eventoExistente.setStatusEvento(StatusEventos.ANDAMENTO);
+        Optional<Eventos> eventoExistente = eventosRepository.criandoEventoEStatusDefault(numeroEvento);
+        Long cliente = clienteRepository.findById(eventosDTO.getClienteId()).getId();
+
+        eventService.buscarEventosOuFalhar(numeroEvento);
+        clientService.buscarClienteOuFalhar(cliente);
         return Response.ok("Evento em Andamento").build();
     }
 
