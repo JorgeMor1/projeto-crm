@@ -12,4 +12,19 @@ public class ClienteRepository implements PanacheRepository<Cliente> {
     public Optional<Cliente> buscarClientePorId(Long idCliente){
         return find("id", idCliente).firstResultOptional();
     }
+
+    public boolean buscaCpf(String cpf) {
+         return  find("cpf", cpf)
+                 .stream()
+                 .findAny()
+                 .isPresent();
+
+    }
+
+    public boolean buscaEmail(String email) {
+        return find("email", email)
+                .stream()
+                .findAny()
+                .isPresent();
+    }
 }

@@ -3,6 +3,7 @@ package io.github.JorgeMor1.controller;
 import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.dto.ClienteDTO;
 import io.github.JorgeMor1.repository.ClienteRepository;
+import io.github.JorgeMor1.services.ClientService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,23 +18,21 @@ public class ClienteResource {
 
     private final ClienteRepository clienteRepository;
 
+    private final ClientService clientService;
+
     @Inject
-    public ClienteResource(ClienteRepository clienteRepository) {
+    public ClienteResource(ClienteRepository clienteRepository, ClientService clientService) {
         this.clienteRepository = clienteRepository;
+        this.clientService = clientService;
     }
 
     @POST
     @Transactional
     public Response createClient(ClienteDTO clienteDTO){
-        Cliente cliente = new Cliente();
-        cliente.setNome(clienteDTO.getNome());
-        cliente.setCpf(clienteDTO.getCpf());
-        cliente.setTelefoneContato(clienteDTO.getTelefoneContato());
-        cliente.setEmail(clienteDTO.getEmail());
-        clienteRepository.persist(cliente);
+        clientService.createClient(clienteDTO);
         return Response
                 .status(Response.Status.CREATED.getStatusCode())
-                .entity(cliente)
+                .entity(clienteDTO)
                 .build();
 
     }
