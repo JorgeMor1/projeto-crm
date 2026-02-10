@@ -11,6 +11,14 @@ public class UsuariosDTO {
     private String email;
     private Cargos cargo;
 
+    public UsuariosDTO(String login, String nome, String sobrenome, String email, Cargos cargo) {
+        this.login = login;
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.email = email;
+        this.cargo = cargo;
+    }
+
     public String getLogin() {
         return login;
     }
