@@ -1,18 +1,15 @@
 package io.github.JorgeMor1.controller;
 
-import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.domain.Eventos;
-import io.github.JorgeMor1.domain.StatusEventos;
 import io.github.JorgeMor1.dto.EventosDTO;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
-import io.github.JorgeMor1.services.ClientService;
+import io.github.JorgeMor1.services.ClienteService;
 import io.github.JorgeMor1.services.EventService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -30,10 +27,10 @@ public class EventosResource {
 
     private final EventService eventService;
 
-    private final ClientService clientService;
+    private final ClienteService clientService;
 
     @Inject
-    public EventosResource(ClienteRepository clienteRepository, EventosRepository eventosRepository, EventService eventService, ClientService clientService) {
+    public EventosResource(ClienteRepository clienteRepository, EventosRepository eventosRepository, EventService eventService, ClienteService clientService) {
         this.clienteRepository = clienteRepository;
         this.eventosRepository = eventosRepository;
         this.eventService = eventService;

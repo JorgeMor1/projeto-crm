@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 public class Cargos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "nome_cargo")
+    private Long cargo_id;
+    @Column(name = "nome_cargo", unique = true)
     private String nomeCargo;
 
     public String getNomeCargo() {
@@ -19,7 +19,7 @@ public class Cargos {
         this.nomeCargo = nomeCargo;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCargo_id() {
+        return cargo_id;
     }
 }

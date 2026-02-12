@@ -20,13 +20,14 @@ public class UsuariosService {
     CargoRepository cargoRepository = new CargoRepository();
 
 
-    public Cargos validaCargo(String cargoUsuario){
-        PanacheQuery<Cargos> selectNomeCargoFromCargo = cargoRepository.find("select nome_cargo from cargo");
-        String cargoFromatado = cargoUsuario.toUpperCase();
-        if(selectNomeCargoFromCargo.equals(cargoFromatado)){
-            return cargoRepository.findById(Long.valueOf("selec id from cargo"));
-        }
-        return null;
+    public Cargos validaCargo(UsuariosDTO usuariosDTO){
+        String cargoFormatado = usuariosDTO.getNomeCargo().toUpperCase();
+        return cargoRepository
+                .find("upper(nomeCargo) = ?1", cargoFormatado)
+                .firstResultOptional()
+                .orElseThrow(() ->
+                        new RuntimeException("Cargo não encontrado: " + cargoFormatado)
+                );
     }
 
 
@@ -34,12 +35,26 @@ public class UsuariosService {
         Usuarios usuario = new Usuarios();
         usuario.setLogin(usuariosDTO.getLogin());
         usuario.setNome(usuariosDTO.getNome());
+        usuario.setSobrenome(usuariosDTO.getSobrenome());
         usuario.setEmail(usuariosDTO.getEmail());
-        usuario.setCargo(validaCargo(usuariosDTO.getCargo().getNomeCargo()));
+
+        Cargos cargo = validaCargo(usuariosDTO);
+        usuario.setCargo(cargo);
         usuarioRepository.persist(usuario);
         return usuario;
     }
 
 
+    public void updateUser(UsuariosDTO usuariosDTO, Long userId) {
+        Usuarios usuario = usuarioRepository.findById(userId);
+        usuario.setLogin(usuariosDTO.getLogin());
+        usuario.setNome(usuariosDTO.getNome());
+        usuario.setSobrenome(usuariosDTO.getSobrenome());
+        usuario.setEmail(usuariosDTO.getEmail());
+    }
 
+    public void deleteUser(Long idUser){
+        Usuarios user = usuarioRepository.findById(idUser);
+        usuarioRepository.delete(user);
+    }
 }
