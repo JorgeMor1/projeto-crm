@@ -44,7 +44,7 @@ public class EventosResource {
     @POST
     @Transactional
     public Response createEvent(EventosDTO eventosDTO){
-        eventService.criaEventos(eventosDTO.getClienteId());
+        eventService.criaEventos(eventosDTO.getClienteId(), eventosDTO);
 
         return Response
                 .status(Response.Status.CREATED)

@@ -27,9 +27,17 @@ public class Eventos {
     @Column(name = "status_evento", columnDefinition = "status_eventos_enum")
     private StatusEventos statusEvento = StatusEventos.AGUARDANDO;
 
-
+    private String origem;
 
     public Eventos() {
+    }
+
+    public String getOrigem() {
+        return origem;
+    }
+
+    public void setOrigem(String origem) {
+        this.origem = origem;
     }
 
     public Cliente getCliente() {

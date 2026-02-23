@@ -3,6 +3,7 @@ package io.github.JorgeMor1.services;
 import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.domain.Eventos;
 import io.github.JorgeMor1.domain.StatusEventos;
+import io.github.JorgeMor1.dto.EventosDTO;
 import io.github.JorgeMor1.exception.CustomerNotFoundException;
 import io.github.JorgeMor1.exception.EventNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
@@ -27,11 +28,12 @@ public class EventService {
 
 
     //Criar uma classe para ResponseDTO e devolver aqui
-    public Eventos criaEventos(Long idCliente){
+    public Eventos criaEventos(Long idCliente, EventosDTO eventosDTO){
         Cliente cliente = clienteRepository.findByIdOptional(idCliente)
                 .orElseThrow(() -> new CustomerNotFoundException(idCliente));
                         Eventos evento = new Eventos();
                         evento.setCliente(cliente);
+                        evento.setOrigem(eventosDTO.getOrigem().toUpperCase());
                         evento.setStatusEvento(StatusEventos.ANDAMENTO);
                         eventosRepository.persist(evento);
                         return evento;

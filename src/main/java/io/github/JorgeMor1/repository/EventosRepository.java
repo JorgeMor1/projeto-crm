@@ -16,9 +16,6 @@ import java.util.Optional;
 @ApplicationScoped
 public class EventosRepository implements PanacheRepository<Eventos> {
 
-    public void persist(Eventos evento) {
-        this.persist(evento);
-    }
 
 
 
