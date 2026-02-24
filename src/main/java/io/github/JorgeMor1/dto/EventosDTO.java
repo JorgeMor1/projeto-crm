@@ -5,6 +5,16 @@ import io.github.JorgeMor1.domain.StatusEventos;
 public class EventosDTO {
     private Long clienteId;
     private String origem;
+    private String usuarioLogin;
+
+
+    public String getUsuarioLogin() {
+        return usuarioLogin;
+    }
+
+    public void setUsuarioLogin(String usuarioLogin) {
+        this.usuarioLogin = usuarioLogin;
+    }
 
     public String getOrigem() {
         return origem;
