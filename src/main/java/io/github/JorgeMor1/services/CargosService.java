@@ -7,6 +7,10 @@ import io.github.JorgeMor1.exception.CustomerNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
+
+import java.util.Optional;
+
 @ApplicationScoped
 public class CargosService {
 
@@ -14,9 +18,14 @@ public class CargosService {
     CargoRepository cargoRepository = new CargoRepository();
 
     public Cargos createPosition(CargoDTO cargoDTO){
-        Cargos cargo = new Cargos();
         String cargoFormatado = cargoDTO.getNomeCargo().toUpperCase();
-        cargo.setNomeCargo(cargoFormatado);
+
+        Optional<Cargos> cargoExistente = cargoRepository.find("nomeCargo", cargoFormatado).firstResultOptional();
+        if (cargoExistente.isPresent()) {
+            throw new WebApplicationException("Já existe um cargo cadastrado com o nome: " + cargoFormatado, 409);
+        }
+        Cargos cargo = new Cargos();
+        cargo.setNomeCargo(cargoDTO.getNomeCargo().toUpperCase());
         cargoRepository.persist(cargo);
         return cargo;
     }

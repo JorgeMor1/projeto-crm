@@ -2,6 +2,7 @@ package io.github.JorgeMor1.controller;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.dto.CargoDTO;
+import io.github.JorgeMor1.dto.CargoResponseDTO;
 import io.github.JorgeMor1.repository.CargoRepository;
 import io.github.JorgeMor1.services.CargosService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -32,17 +33,24 @@ public class CargoResource {
     @POST
     @Transactional
     public Response createCargo(CargoDTO cargoDTO){
-        cargosService.createPosition(cargoDTO);
+        Cargos novoCargo = cargosService.createPosition(cargoDTO);
+
+        CargoResponseDTO cargoResponseDTO = CargoResponseDTO.cargoResponseDTO(novoCargo);
+
         return Response
                 .status(Response.Status.CREATED.getStatusCode())
-                .entity(cargoDTO)
+                .entity(cargoResponseDTO)
                 .build();
     }
 
     @GET
     public Response listAllCargos(){
-        PanacheQuery<Cargos> cargos = cargoRepository.findAll();
-        return Response.ok(cargos.list()).build();
+        List<Cargos> listaCargos = cargoRepository.listAll();
+
+        List<Cargos> listaDTOS = listaCargos;
+        listaCargos.stream();
+
+        return Response.ok(listaDTOS).build();
     }
 
     @PUT
