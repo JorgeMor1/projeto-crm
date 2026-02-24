@@ -2,6 +2,7 @@ package io.github.JorgeMor1.services;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.dto.CargoDTO;
+import io.github.JorgeMor1.dto.CargoResponseDTO;
 import io.github.JorgeMor1.exception.CargoNotFoundException;
 import io.github.JorgeMor1.exception.CustomerNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
@@ -9,6 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -41,5 +43,12 @@ public class CargosService {
         Cargos cargoId = cargoRepository.findByIdOptional(id)
                         .orElseThrow(() -> new CargoNotFoundException(id));
         cargoRepository.delete(cargoId);
+    }
+
+    public List<CargoResponseDTO> listAll(){
+        return cargoRepository.listAll()
+                .stream()
+                .map(CargoResponseDTO::cargoResponseDTO)
+                .toList();
     }
 }
