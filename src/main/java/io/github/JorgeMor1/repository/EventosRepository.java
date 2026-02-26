@@ -24,10 +24,7 @@ public class EventosRepository implements PanacheRepository<Eventos> {
 
 
     //Modificar esse método, ele não está criando o evento, apenas atualizando na criação do evento
-    public Optional<Eventos> criandoEventoEStatusDefault(Integer numeroEvento) {
-        update("statusEvento = ?1 WHERE numeroEvento = ?2", StatusEventos.ANDAMENTO, numeroEvento);
-        return find("numeroEvento", numeroEvento).firstResultOptional();
-    }
+
 
 
 }

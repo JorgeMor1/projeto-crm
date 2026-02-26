@@ -10,7 +10,7 @@ public class Cargos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cargo_id;
-    @Column(name = "nome_cargo", unique = true)
+    @Column(name = "nome_cargo", unique = true, nullable = false)
     private String nomeCargo;
 
     @Column(name = "created_at", nullable = false, updatable = false)

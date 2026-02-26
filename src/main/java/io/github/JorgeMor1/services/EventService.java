@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class EventService {
@@ -26,6 +27,8 @@ public class EventService {
     ClienteRepository clienteRepository = new ClienteRepository();
     @Inject
     UsuarioRepository usuarioRepository = new UsuarioRepository();
+    @Inject
+    ClienteService clienteService = new ClienteService();
 
     public Eventos buscaClienteId(Long idCliente){
         return eventosRepository.findByIdOptional(idCliente)
@@ -35,16 +38,14 @@ public class EventService {
 
 
     public EventosResponseDTO criaEventos(Long idCliente, EventosDTO eventosDTO){
-        //Usuarios usuario = usuarioRepository.find("login", eventosDTO.getUsuarioLogin()).firstResult();
         Usuarios usuario = usuarioRepository.findById(eventosDTO.getUsuarioId());
-        //EventosResponseDTO eventosResponseDTO = new EventosResponseDTO();
         Cliente cliente = clienteRepository.findByIdOptional(idCliente)
                 .orElseThrow(() -> new CustomerNotFoundException(idCliente));
                         Eventos evento = new Eventos();
                         evento.setCliente(cliente);
                         evento.setOrigem(eventosDTO.getOrigem().toUpperCase());
                         evento.setUsuario(usuario);
-                        evento.setStatusEvento(StatusEventos.ANDAMENTO);
+                        evento.setStatusEvento(StatusEventos.AGUARDANDO);
                         eventosRepository.persist(evento);
                 return new EventosResponseDTO(evento.getId(), evento.getCliente().getId(), evento.getUsuario().getId(), evento.getOrigem(), evento.getStatusEvento().name(), evento.getCreatedAt());
     }
@@ -52,10 +53,27 @@ public class EventService {
 
 
     //Esse método está no PUT, deveria estar no GET para buscar o evento
-    public Eventos buscarEventosOuFalhar(Integer numeroEvento){
-        return eventosRepository.criandoEventoEStatusDefault(numeroEvento)
+    public Eventos buscarEventosOuFalhar(Integer numeroEvento, EventosDTO eventosDTO){
+        //Buscando o evento que está no banco pelo Id passado na URL;
+        //clienteService.buscarClienteOuFalhar(eventosDTO.getClienteId());
+        Eventos evento = eventosRepository.find("numeroEvento", numeroEvento)
+                .firstResultOptional()
                 .orElseThrow(() -> new EventNotFoundException(numeroEvento));
+            Usuarios usuarioId = usuarioRepository.findById(eventosDTO.getUsuarioId().longValue());
+        evento.setStatusEvento(StatusEventos.ANDAMENTO);
+            evento.setOrigem(eventosDTO.getOrigem().toUpperCase());
+            evento.setUsuario(usuarioId);
+
+            return evento;
     }
+
+
+    /*
+    * {
+  "clienteId": 2,
+  "origem": "facebook",
+  "usuarioId": 4
+}*/
 
     public List<EventosResponseDTO> listAll() {
 
