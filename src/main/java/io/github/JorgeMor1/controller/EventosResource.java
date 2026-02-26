@@ -64,15 +64,9 @@ public class EventosResource {
     @PUT
     @Path("{numero_evento}")
     @Transactional
-    public Response updateStatusEvent(@PathParam("numero_evento") Integer numeroEvento, EventosDTO eventosDTO){
-        /*Colocar aqui a ação de contato enviado, que será um envio de e-mail. Validar o id do usuário e o evento que será atualizado*/
-        //Buscando o evento que está no banco pelo Id passado na URL;
-        Optional<Eventos> eventoExistente = eventosRepository.criandoEventoEStatusDefault(numeroEvento);
-        Long cliente = clienteRepository.findById(eventosDTO.getClienteId()).getId();
-
-        eventService.buscarEventosOuFalhar(numeroEvento);
-        clientService.buscarClienteOuFalhar(cliente);
-        return Response.ok("Evento em Andamento").build();
+    public Response updateStatusEvent(@PathParam("numero_evento") Integer numeroEvento,  EventosDTO eventosDTO){
+        eventService.buscarEventosOuFalhar(numeroEvento, eventosDTO);
+        return Response.ok().build();
     }
 
     //Um evento não pode ser excluído apenas mudado seu status
