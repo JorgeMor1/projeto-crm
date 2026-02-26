@@ -1,66 +1,54 @@
-# projeto-crm
+# 📌 CRM API - Backend
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Projeto pessoal de um CRM desenvolvido com Java e Quarkus, com foco em boas práticas de arquitetura backend, segurança e organização de código.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## 🚀 Tecnologias utilizadas
 
-## Running the application in dev mode
+- Java 17+
+- Quarkus
+- Hibernate ORM / JPA
+- PostgreSQL
+- JWT (autenticação)
+- Bean Validation
 
-You can run your application in dev mode that enables live coding using:
+## 🏗 Arquitetura
 
-```shell script
+A aplicação segue o padrão em camadas:
+
+Controller → Service → Repository
+
+- Controllers: recebem requisições e retornam respostas
+- Services: concentram regras de negócio
+- Repositories: acesso a dados
+- DTOs: utilizados para entrada e saída de dados
+- Tratamento global de exceções
+
+## 📦 Funcionalidades
+
+- CRUD de Usuários
+- CRUD de Departamentos
+- CRUD de Clientes
+- CRUD de Eventos
+
+## 📑 Regras de negócio implementadas
+
+- Validação de CPF
+- Validação de e-mail único
+- Evento deve estar associado a um cliente
+- Controle de acesso por perfil (Admin / Gestor / Usuário)
+- Usuários visualizam apenas seus próprios eventos
+
+## 🔐 Segurança
+
+- Senhas armazenadas com hash
+- Autenticação baseada em JWT
+- Controle de autorização por perfil
+
+## ▶️ Como executar o projeto
+
+1. Clone o repositório
+2. Configure o banco de dados no application.properties
+3. Execute:
+
+```bash
 ./mvnw quarkus:dev
-```
-
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
-
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/projeto-crm-1.0-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
