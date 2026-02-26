@@ -16,8 +16,10 @@ import java.util.Optional;
 @ApplicationScoped
 public class EventosRepository implements PanacheRepository<Eventos> {
 
-
-
+    //Verifica se cliente possui evento
+    public boolean existsByClienteId(Long clienteId) {
+        return count("cliente.id", clienteId) > 0;
+    }
 
 
 
@@ -26,4 +28,6 @@ public class EventosRepository implements PanacheRepository<Eventos> {
         update("statusEvento = ?1 WHERE numeroEvento = ?2", StatusEventos.ANDAMENTO, numeroEvento);
         return find("numeroEvento", numeroEvento).firstResultOptional();
     }
+
+
 }

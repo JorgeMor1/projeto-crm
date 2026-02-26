@@ -2,6 +2,7 @@ package io.github.JorgeMor1.controller;
 
 import io.github.JorgeMor1.domain.Eventos;
 import io.github.JorgeMor1.dto.EventosDTO;
+import io.github.JorgeMor1.dto.EventosResponseDTO;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
 import io.github.JorgeMor1.services.ClienteService;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
 import java.util.Optional;
 
 @Path("api/v1/eventos")
@@ -41,19 +43,17 @@ public class EventosResource {
     @POST
     @Transactional
     public Response createEvent(EventosDTO eventosDTO){
-        eventService.criaEventos(eventosDTO.getClienteId(), eventosDTO);
-
         return Response
                 .status(Response.Status.CREATED)
-                .entity(eventosDTO) //Mudar para retornar o número do evento. Necessário criar uma classe de Response
+                .entity(eventService.criaEventos(eventosDTO.getClienteId(), eventosDTO))
                 .build();
 
     }
 
     @GET
     public Response listAllEvents(){
-        PanacheQuery<Eventos> query = eventosRepository.findAll();
-        return Response.ok(query.list()).build();
+        List<EventosResponseDTO> eventos = eventService.listAll();
+        return Response.ok(eventos).build();
     }
 
     /*Atualiza o status do evento, enviado o id do cliente como parâmetro
