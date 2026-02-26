@@ -3,7 +3,7 @@ package io.github.JorgeMor1.controller;
 import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.dto.ClienteDTO;
 import io.github.JorgeMor1.repository.ClienteRepository;
-import io.github.JorgeMor1.services.ClientService;
+import io.github.JorgeMor1.services.ClienteService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -18,10 +18,10 @@ public class ClienteResource {
 
     private final ClienteRepository clienteRepository;
 
-    private final ClientService clientService;
+    private final ClienteService clientService;
 
     @Inject
-    public ClienteResource(ClienteRepository clienteRepository, ClientService clientService) {
+    public ClienteResource(ClienteRepository clienteRepository, ClienteService clientService) {
         this.clienteRepository = clienteRepository;
         this.clientService = clientService;
     }

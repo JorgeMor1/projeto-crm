@@ -6,6 +6,8 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 
+import java.time.LocalDateTime;
+
 @Table(name = "eventos")
 @Entity
 public class Eventos {
@@ -27,9 +29,43 @@ public class Eventos {
     @Column(name = "status_evento", columnDefinition = "status_eventos_enum")
     private StatusEventos statusEvento = StatusEventos.AGUARDANDO;
 
+    private String origem;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuarios usuario;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    public LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now().withNano(0);
+    }
+
+
+
+    public Usuarios getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuarios usuario) {
+        this.usuario = usuario;
+    }
 
     public Eventos() {
+    }
+
+    public String getOrigem() {
+        return origem;
+    }
+
+    public void setOrigem(String origem) {
+        this.origem = origem;
     }
 
     public Cliente getCliente() {

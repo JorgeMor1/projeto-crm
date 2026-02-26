@@ -9,7 +9,15 @@ public class UsuariosDTO {
     private String nome;
     private String sobrenome;
     private String email;
-    private Cargos cargo;
+    private String nomeCargo;
+
+    public UsuariosDTO(String login, String nome, String sobrenome, String email, String nomeCargo) {
+        this.login = login;
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.email = email;
+        this.nomeCargo = nomeCargo;
+    }
 
     public String getLogin() {
         return login;
@@ -43,11 +51,11 @@ public class UsuariosDTO {
         this.email = email;
     }
 
-    public Cargos getCargo() {
-        return cargo;
+    public String getNomeCargo() {
+        return nomeCargo;
     }
 
-    public void setCargo(Cargos cargo) {
-        this.cargo = cargo;
+    public void setNomeCargo(String nomeCargo) {
+        nomeCargo = nomeCargo;
     }
 }
