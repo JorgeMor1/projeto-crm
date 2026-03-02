@@ -65,11 +65,8 @@ public class ClienteService {
     }
 
 
-    public List<ClientResponseDTO> listAllClients(){
-        return clienteRepository.findAll()
-                .stream()
-                .map(ClientResponseDTO::new)
-                .toList();
+    public List<Cliente> listAllClients(){
+        return clienteRepository.listAll();
     }
 
     public void atualizaCliente(Long id, ClienteDTO clienteDTO){

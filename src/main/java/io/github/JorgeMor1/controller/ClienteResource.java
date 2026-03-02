@@ -1,6 +1,7 @@
 package io.github.JorgeMor1.controller;
 
 import io.github.JorgeMor1.domain.Cliente;
+import io.github.JorgeMor1.dto.ClientResponseDTO;
 import io.github.JorgeMor1.dto.ClienteDTO;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.services.ClienteService;
@@ -8,8 +9,11 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
 
 @Path("api/v1/clientes")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -29,17 +33,22 @@ public class ClienteResource {
     @POST
     @Transactional
     public Response createClient(ClienteDTO clienteDTO){
-        clientService.createClient(clienteDTO);
+        Cliente cliente = clientService.createClient(clienteDTO);
+        ClientResponseDTO clientResponseDTO = new ClientResponseDTO(cliente);
         return Response
                 .status(Response.Status.CREATED.getStatusCode())
-                .entity(clienteDTO)
+                .entity(clientResponseDTO)
                 .build();
 
     }
 
     @GET
     public Response listAllClients(){
-        return Response.ok(clientService.listAllClients()).build();
+        List<Cliente> cliente = clientService.listAllClients();
+        List<ClientResponseDTO> response =
+                cliente.stream().map(ClientResponseDTO::new).toList();
+
+        return Response.ok(response).build();
     }
 
     @PUT
