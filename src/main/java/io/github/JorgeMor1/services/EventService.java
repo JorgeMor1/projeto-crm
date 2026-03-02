@@ -37,7 +37,7 @@ public class EventService {
     }
 
 
-    public EventosResponseDTO criaEventos(Long idCliente, EventosDTO eventosDTO){
+    public Eventos criaEventos(Long idCliente, EventosDTO eventosDTO){
         Usuarios usuario = usuarioRepository.findById(eventosDTO.getUsuarioId());
         Cliente cliente = clienteRepository.findByIdOptional(idCliente)
                 .orElseThrow(() -> new CustomerNotFoundException(idCliente));
@@ -47,7 +47,7 @@ public class EventService {
                         evento.setUsuario(usuario);
                         evento.setStatusEvento(StatusEventos.AGUARDANDO);
                         eventosRepository.persist(evento);
-                return new EventosResponseDTO(evento.getId(), evento.getCliente().getId(), evento.getUsuario().getId(), evento.getOrigem(), evento.getStatusEvento().name(), evento.getCreatedAt());
+                return evento;
     }
 
 

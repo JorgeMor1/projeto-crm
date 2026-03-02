@@ -1,5 +1,6 @@
 package io.github.JorgeMor1.dto;
 
+import io.github.JorgeMor1.domain.Eventos;
 import jakarta.persistence.Column;
 import jakarta.persistence.PrePersist;
 
@@ -22,6 +23,15 @@ public class EventosResponseDTO {
         this.statusEvento = statusEvento;
         this.origem = origem;
         this.createdAt = createdAt;
+    }
+
+    public EventosResponseDTO(Eventos eventos) {
+        this.idEvento = eventos.getId();
+        this.clienteId = eventos.getCliente().getId();
+        this.usuarioId = eventos.getUsuario().getId();
+        this.statusEvento = eventos.getStatusEvento().getStatus();
+        this.origem = eventos.getOrigem();
+        this.createdAt = eventos.getCreatedAt();
     }
 
     public Long getIdEvento() {
