@@ -17,7 +17,7 @@ import java.util.Optional;
 public class CargosService {
 
     @Inject
-    CargoRepository cargoRepository = new CargoRepository();
+    CargoRepository cargoRepository;
 
     public Cargos createPosition(CargoDTO cargoDTO){
         String cargoFormatado = cargoDTO.getNomeCargo().toUpperCase();
@@ -45,10 +45,7 @@ public class CargosService {
         cargoRepository.delete(cargoId);
     }
 
-    public List<CargoResponseDTO> listAll(){
-        return cargoRepository.listAll()
-                .stream()
-                .map(CargoResponseDTO::cargoResponseDTO)
-                .toList();
+    public List<Cargos> listAll(){
+        return cargoRepository.listAll();
     }
 }
