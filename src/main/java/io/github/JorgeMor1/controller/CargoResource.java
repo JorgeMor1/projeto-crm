@@ -33,15 +33,25 @@ public class CargoResource {
     @POST
     @Transactional
     public Response createCargo(CargoDTO cargoDTO){
+        Cargos cargos = cargosService.createPosition(cargoDTO);
+        CargoResponseDTO responseDTO = new CargoResponseDTO(cargos);
+
         return Response
                 .status(Response.Status.CREATED.getStatusCode())
-                .entity(cargosService.createPosition(cargoDTO))
+                .entity(responseDTO)
                 .build();
     }
 
     @GET
     public Response listAllCargos(){
-        return Response.ok(cargosService.listAll()).build();
+        List<Cargos> cargos = cargosService.listAll();
+
+        List<CargoResponseDTO> response =
+                cargos.stream()
+                        .map(CargoResponseDTO::new)
+                        .toList();
+
+        return Response.ok(response).build();
     }
 
     @PUT
