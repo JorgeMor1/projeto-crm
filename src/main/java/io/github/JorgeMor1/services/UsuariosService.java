@@ -7,8 +7,11 @@ import io.github.JorgeMor1.dto.UsuariosDTO;
 import io.github.JorgeMor1.repository.CargoRepository;
 import io.github.JorgeMor1.repository.UsuarioRepository;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.List;
 
 @ApplicationScoped
 public class UsuariosService {
@@ -56,5 +59,9 @@ public class UsuariosService {
     public void deleteUser(Long idUser){
         Usuarios user = usuarioRepository.findById(idUser);
         usuarioRepository.delete(user);
+    }
+
+    public List<Usuarios> listAllUsers(int page, int size){
+         return usuarioRepository.findAll().page(Page.of(page, size)).list();
     }
 }
