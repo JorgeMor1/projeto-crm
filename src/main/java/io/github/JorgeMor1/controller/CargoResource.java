@@ -43,7 +43,9 @@ public class CargoResource {
     }
 
     @GET
-    public Response listAllCargos(){
+    public Response listAllCargos(
+
+    ){
         List<Cargos> cargos = cargosService.listAll();
 
         List<CargoResponseDTO> response =
