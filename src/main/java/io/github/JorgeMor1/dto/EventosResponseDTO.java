@@ -34,6 +34,9 @@ public class EventosResponseDTO {
         this.createdAt = eventos.getCreatedAt();
     }
 
+    public EventosResponseDTO() {
+    }
+
     public Long getIdEvento() {
         return idEvento;
     }

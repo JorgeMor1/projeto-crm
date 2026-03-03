@@ -11,6 +11,7 @@ import io.github.JorgeMor1.exception.EventNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
 import io.github.JorgeMor1.repository.UsuarioRepository;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -75,18 +76,8 @@ public class EventService {
   "usuarioId": 4
 }*/
 
-    public List<EventosResponseDTO> listAll() {
+    public List<Eventos> listAllEventos(int page, int size) {
 
-        return eventosRepository.listAll()
-                .stream()
-                .map(evento -> new EventosResponseDTO(
-                        evento.getId(),
-                        evento.getCliente().getId(),
-                        evento.getUsuario().getId(),
-                        evento.getOrigem(),
-                        evento.getStatusEvento().name(),
-                        evento.getCreatedAt()
-                ))
-                .toList();
+        return eventosRepository.findAll().page(Page.of(page, size)).list();
     }
 }
