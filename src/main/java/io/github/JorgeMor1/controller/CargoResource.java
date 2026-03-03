@@ -44,12 +44,13 @@ public class CargoResource {
 
     @GET
     public Response listAllCargos(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size)
+    {
 
-    ){
-        List<Cargos> cargos = cargosService.listAll();
-
-        List<CargoResponseDTO> response =
-                cargos.stream()
+        List<CargoResponseDTO> response = cargosService
+                        .listAll(page, size)
+                        .stream()
                         .map(CargoResponseDTO::new)
                         .toList();
 

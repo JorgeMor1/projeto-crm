@@ -6,6 +6,7 @@ import io.github.JorgeMor1.dto.CargoResponseDTO;
 import io.github.JorgeMor1.exception.CargoNotFoundException;
 import io.github.JorgeMor1.exception.CustomerNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -45,7 +46,7 @@ public class CargosService {
         cargoRepository.delete(cargoId);
     }
 
-    public List<Cargos> listAll(){
-        return cargoRepository.listAll();
+    public List<Cargos> listAll(int page, int size){
+        return cargoRepository.findAll().page(Page.of(page, size)).list();
     }
 }
