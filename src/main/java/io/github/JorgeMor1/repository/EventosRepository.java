@@ -23,8 +23,4 @@ public class EventosRepository implements PanacheRepository<Eventos> {
 
 
 
-    //Modificar esse método, ele não está criando o evento, apenas atualizando na criação do evento
-
-
-
 }
