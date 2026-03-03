@@ -7,6 +7,7 @@ import io.github.JorgeMor1.exception.CustomerDataException;
 import io.github.JorgeMor1.exception.CustomerNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -65,8 +66,8 @@ public class ClienteService {
     }
 
 
-    public List<Cliente> listAllClients(){
-        return clienteRepository.listAll();
+    public List<Cliente> listAllClients(int page, int size){
+        return clienteRepository.findAll().page(Page.of(page, size)).list();
     }
 
     public void atualizaCliente(Long id, ClienteDTO clienteDTO){

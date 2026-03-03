@@ -43,10 +43,15 @@ public class ClienteResource {
     }
 
     @GET
-    public Response listAllClients(){
-        List<Cliente> cliente = clientService.listAllClients();
-        List<ClientResponseDTO> response =
-                cliente.stream().map(ClientResponseDTO::new).toList();
+    public Response listAllClients(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size
+    ){
+        List<ClientResponseDTO> response = clientService
+                .listAllClients(page, size)
+                .stream()
+                .map(ClientResponseDTO::new)
+                .toList();
 
         return Response.ok(response).build();
     }
