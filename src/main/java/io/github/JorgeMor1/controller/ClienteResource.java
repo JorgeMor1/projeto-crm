@@ -56,6 +56,13 @@ public class ClienteResource {
         return Response.ok(response).build();
     }
 
+    @GET
+    @Path("{id}")
+    public Response getCliente(@PathParam("id") Long id){
+        Cliente cliente = clientService.buscarClienteOuFalhar(id);
+        return Response.ok(cliente).build();
+    }
+
     @PUT
     @Path("{id}")
     @Transactional

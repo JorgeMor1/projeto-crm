@@ -1,16 +1,14 @@
 package io.github.JorgeMor1.services;
 
 import io.github.JorgeMor1.domain.Cliente;
-import io.github.JorgeMor1.dto.ClientResponseDTO;
 import io.github.JorgeMor1.dto.ClienteDTO;
 import io.github.JorgeMor1.exception.CustomerDataException;
-import io.github.JorgeMor1.exception.CustomerNotFoundException;
+import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
@@ -24,18 +22,10 @@ public class ClienteService {
     @Inject
     EventosRepository eventosRepository = new EventosRepository();
 
-    //Passar essas validações do cliente para um método e deixar o service mais enxuto
-
     private void validarCpfExistente(String cpf) {
         if (clienteRepository.buscaCpf(cpf)) {
             throw new CustomerDataException("O seguinte CPF já está cadastrado: ", cpf);
         }
-    }
-
-    public Cliente buscarClientePorId(Long id) {
-        return clienteRepository.findByIdOptional(id)
-                .orElseThrow(() ->
-                        new NotFoundException("Cliente não encontrado"));
     }
 
     private void validaremailExistente(String email) {
@@ -62,7 +52,7 @@ public class ClienteService {
 
     public Cliente buscarClienteOuFalhar (Long idCliente){
         return clienteRepository.buscarClientePorId(idCliente)
-                .orElseThrow(() -> new CustomerNotFoundException(idCliente));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente ", idCliente));
     }
 
 
@@ -71,7 +61,7 @@ public class ClienteService {
     }
 
     public void atualizaCliente(Long id, ClienteDTO clienteDTO){
-        Cliente cliente = buscarClientePorId(id);
+        Cliente cliente = buscarClienteOuFalhar(id);
         cliente.setNome(clienteDTO.getNome());
         cliente.setCpf(clienteDTO.getCpf());
         cliente.setTelefoneContato(clienteDTO.getTelefoneContato());
@@ -88,7 +78,7 @@ public class ClienteService {
     }
 
     public void deletaCliente(Long id){
-        Cliente cliente = buscarClientePorId(id);
+        Cliente cliente = buscarClienteOuFalhar(id);
         validarClienteSemEventos(id);
         clienteRepository.delete(cliente);
     }
