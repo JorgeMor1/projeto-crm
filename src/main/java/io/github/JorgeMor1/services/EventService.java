@@ -5,19 +5,16 @@ import io.github.JorgeMor1.domain.Eventos;
 import io.github.JorgeMor1.domain.StatusEventos;
 import io.github.JorgeMor1.domain.Usuarios;
 import io.github.JorgeMor1.dto.EventosDTO;
-import io.github.JorgeMor1.dto.EventosResponseDTO;
-import io.github.JorgeMor1.exception.CustomerNotFoundException;
 import io.github.JorgeMor1.exception.EventNotFoundException;
+import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
 import io.github.JorgeMor1.repository.UsuarioRepository;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class EventService {
@@ -33,7 +30,7 @@ public class EventService {
 
     public Eventos buscaClienteId(Long idCliente){
         return eventosRepository.findByIdOptional(idCliente)
-                .orElseThrow(() -> new CustomerNotFoundException(idCliente));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente", idCliente));
 
     }
 
@@ -41,7 +38,7 @@ public class EventService {
     public Eventos criaEventos(Long idCliente, EventosDTO eventosDTO){
         Usuarios usuario = usuarioRepository.findById(eventosDTO.getUsuarioId());
         Cliente cliente = clienteRepository.findByIdOptional(idCliente)
-                .orElseThrow(() -> new CustomerNotFoundException(idCliente));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente", idCliente));
                         Eventos evento = new Eventos();
                         evento.setCliente(cliente);
                         evento.setOrigem(eventosDTO.getOrigem().toUpperCase());
