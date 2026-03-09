@@ -3,13 +3,15 @@ package io.github.JorgeMor1.dto;
 import io.github.JorgeMor1.domain.Usuarios;
 
 public class UsuariosResponseDTO {
+    private Long id;
     private String login;
     private String nome;
     private String sobrenome;
     private String email;
     private String nomeCargo;
 
-    public UsuariosResponseDTO(String login, String nome, String sobrenome, String email, String nomeCargo) {
+    public UsuariosResponseDTO(Long id, String login, String nome, String sobrenome, String email, String nomeCargo) {
+        this.id = id;
         this.login = login;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -21,11 +23,16 @@ public class UsuariosResponseDTO {
     }
 
     public UsuariosResponseDTO(Usuarios usuarios) {
+        this.id = usuarios.getId();
         this.login = usuarios.getLogin();
         this.nome = usuarios.getNome();
         this.sobrenome = usuarios.getSobrenome();
         this.email = usuarios.getEmail();
         this.nomeCargo = usuarios.getCargo().getNomeCargo().toUpperCase();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getLogin() {
