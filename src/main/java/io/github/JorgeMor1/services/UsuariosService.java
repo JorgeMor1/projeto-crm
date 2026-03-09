@@ -2,16 +2,16 @@ package io.github.JorgeMor1.services;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.domain.Usuarios;
-import io.github.JorgeMor1.dto.CargoDTO;
 import io.github.JorgeMor1.dto.UsuariosDTO;
+import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
 import io.github.JorgeMor1.repository.UsuarioRepository;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UsuariosService {
@@ -29,7 +29,7 @@ public class UsuariosService {
                 .find("upper(nomeCargo) = ?1", cargoFormatado)
                 .firstResultOptional()
                 .orElseThrow(() ->
-                        new RuntimeException("Cargo não encontrado: " + cargoFormatado)
+                        new ResourceNotFoundException("Cargo", cargoFormatado)
                 );
     }
 
@@ -49,7 +49,8 @@ public class UsuariosService {
 
 
     public void updateUser(UsuariosDTO usuariosDTO, Long userId) {
-        Usuarios usuario = usuarioRepository.findById(userId);
+        Usuarios usuario = usuarioRepository.findByIdOptional(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário",userId));
         usuario.setLogin(usuariosDTO.getLogin());
         usuario.setNome(usuariosDTO.getNome());
         usuario.setSobrenome(usuariosDTO.getSobrenome());
@@ -57,8 +58,9 @@ public class UsuariosService {
     }
 
     public void deleteUser(Long idUser){
-        Usuarios user = usuarioRepository.findById(idUser);
-        usuarioRepository.delete(user);
+        Usuarios usuarios = usuarioRepository.findByIdOptional(idUser)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", idUser));
+        usuarioRepository.delete(usuarios);
     }
 
     public List<Usuarios> listAllUsers(int page, int size){
