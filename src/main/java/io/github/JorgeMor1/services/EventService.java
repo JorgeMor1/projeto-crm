@@ -52,7 +52,6 @@ public class EventService {
 
     public Eventos buscarEventosOuFalhar(Integer numeroEvento, EventosDTO eventosDTO){
         //Buscando o evento que está no banco pelo Id passado na URL;
-        //clienteService.buscarClienteOuFalhar(eventosDTO.getClienteId());
         Eventos evento = eventosRepository.find("numeroEvento", numeroEvento)
                 .firstResultOptional()
                 .orElseThrow(() -> new ResourceNotFoundException("Evento",numeroEvento));
