@@ -50,13 +50,11 @@ public class EventService {
 
 
 
-    //Esse método está no PUT, deveria estar no GET para buscar o evento
     public Eventos buscarEventosOuFalhar(Integer numeroEvento, EventosDTO eventosDTO){
         //Buscando o evento que está no banco pelo Id passado na URL;
-        //clienteService.buscarClienteOuFalhar(eventosDTO.getClienteId());
         Eventos evento = eventosRepository.find("numeroEvento", numeroEvento)
                 .firstResultOptional()
-                .orElseThrow(() -> new EventNotFoundException(numeroEvento));
+                .orElseThrow(() -> new ResourceNotFoundException("Evento",numeroEvento));
             Usuarios usuarioId = usuarioRepository.findById(eventosDTO.getUsuarioId().longValue());
         evento.setStatusEvento(StatusEventos.ANDAMENTO);
             evento.setOrigem(eventosDTO.getOrigem().toUpperCase());
@@ -65,16 +63,7 @@ public class EventService {
             return evento;
     }
 
-
-    /*
-    * {
-  "clienteId": 2,
-  "origem": "facebook",
-  "usuarioId": 4
-}*/
-
     public List<Eventos> listAllEventos(int page, int size) {
-
         return eventosRepository.findAll().page(Page.of(page, size)).list();
     }
 }
