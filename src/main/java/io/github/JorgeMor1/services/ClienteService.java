@@ -2,6 +2,7 @@ package io.github.JorgeMor1.services;
 
 import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.dto.ClienteDTO;
+import io.github.JorgeMor1.exception.BadRequestException;
 import io.github.JorgeMor1.exception.CustomerDataException;
 import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
@@ -13,6 +14,8 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ApplicationScoped
 public class ClienteService {
@@ -24,27 +27,52 @@ public class ClienteService {
 
     private void validarCpfExistente(String cpf) {
         if (clienteRepository.buscaCpf(cpf)) {
-            throw new CustomerDataException("O seguinte CPF já está cadastrado: ", cpf);
+            throw new BadRequestException("CPF ", cpf); // Mudar par o conflict ⚠️⚠️
         }
     }
 
     private void validaremailExistente(String email) {
         if (clienteRepository.buscaEmail(email)) {
-            throw new CustomerDataException("O seguinte E-MAIL já está cadastrado: ", email);
+            throw new BadRequestException("E-mail: ", email); // Mudar par o conflict ⚠️⚠️
         }
+    }
+
+    private String validaCpfValido(String cpf){
+        String cpfFormatted = cpf.replaceAll("\\D","");
+        if (cpfFormatted.length() == 11 && !cpfFormatted.matches(".*[a-zA-Z].*")) {
+            return cpfFormatted;
+        }else {
+            throw new BadRequestException("Cpf: ", cpf);
+        }
+    }
+
+    private boolean validaEmailValido(String email){
+        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        Matcher matcher = pattern.matcher(email);
+        if(matcher.matches()){
+            return true;
+        } else {
+            throw  new BadRequestException("E-mail", email);
+        }
+
     }
 
     //Criando cliente
     public Cliente createClient (ClienteDTO clienteDTO){
-        String cpfFormatted = clienteDTO.getCpf().replaceAll("\\D", "");
+        String cpfFormatted = validaCpfValido(clienteDTO.getCpf());
+        boolean emailValidado = validaEmailValido(clienteDTO.getEmail());
+
         validarCpfExistente(cpfFormatted);
         validaremailExistente(clienteDTO.getEmail());
-
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDTO.getNome());
         cliente.setCpf(cpfFormatted);
         cliente.setTelefoneContato(clienteDTO.getTelefoneContato());
-        cliente.setEmail(clienteDTO.getEmail());
+        if(emailValidado){
+            cliente.setEmail(clienteDTO.getEmail());
+
+        }
 
         clienteRepository.persist(cliente);
         return cliente;
