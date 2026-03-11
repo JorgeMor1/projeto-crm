@@ -1,6 +1,7 @@
-package io.github.JorgeMor1.exception;
+package io.github.JorgeMor1.infra.mapper;
 
 import io.github.JorgeMor1.dto.ErrorResponse;
+import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
