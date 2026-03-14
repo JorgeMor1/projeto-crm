@@ -27,53 +27,65 @@ public class ClienteService {
 
     private void validarCpfExistente(String cpf) {
         if (clienteRepository.buscaCpf(cpf)) {
-            throw new BadRequestException("CPF ", cpf); // Mudar par o conflict ⚠️⚠️
+            throw new BadRequestException("CPF já existe ", cpf); // Mudar par o conflict ⚠️⚠️
         }
     }
 
     private void validaremailExistente(String email) {
         if (clienteRepository.buscaEmail(email)) {
-            throw new BadRequestException("E-mail: ", email); // Mudar par o conflict ⚠️⚠️
+            throw new BadRequestException("E-mail já existe ", email); // Mudar par o conflict ⚠️⚠️
         }
     }
 
     private String validaCpfValido(String cpf){
         String cpfFormatted = cpf.replaceAll("\\D","");
-        if (cpfFormatted.length() == 11 && !cpfFormatted.matches(".*[a-zA-Z].*")) {
+        String CPF_REGEX = "^\\d{11}$";
+        Pattern pattern = Pattern.compile(CPF_REGEX);
+        Matcher matcher = pattern.matcher(cpfFormatted);
+
+        if (cpf != null && matcher.matches() && !cpfFormatted.matches("(\\d)\\1{10}")) {
             return cpfFormatted;
         }else {
             throw new BadRequestException("Cpf: ", cpf);
         }
     }
 
-    private boolean validaEmailValido(String email){
+    private String validaEmailValido(String email){
         String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         Matcher matcher = pattern.matcher(email);
-        if(matcher.matches()){
-            return true;
+        if(matcher.matches() && email != null){
+            return email.toLowerCase().trim();
         } else {
             throw  new BadRequestException("E-mail", email);
         }
 
     }
 
+    private String  validaTelefone(String telefoneContato){
+        String TELEFONE_REGEX = "^\\(?(\\d{2})\\)?\\s?9?\\d{4}-?\\d{4}$";
+        Pattern pattern = Pattern.compile(TELEFONE_REGEX);
+        Matcher matcher = pattern.matcher(telefoneContato);
+        if (matcher.matches() && telefoneContato != null){
+            return telefoneContato.toLowerCase().trim();
+        }else {
+            throw  new BadRequestException("Telefone de contato", telefoneContato);
+        }
+    }
+
     //Criando cliente
     public Cliente createClient (ClienteDTO clienteDTO){
         String cpfFormatted = validaCpfValido(clienteDTO.getCpf());
-        boolean emailValidado = validaEmailValido(clienteDTO.getEmail());
+        String emailValidado = validaEmailValido(clienteDTO.getEmail());
+        String telefoneValidado = validaTelefone(clienteDTO.getTelefoneContato());
 
         validarCpfExistente(cpfFormatted);
         validaremailExistente(clienteDTO.getEmail());
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDTO.getNome());
         cliente.setCpf(cpfFormatted);
-        cliente.setTelefoneContato(clienteDTO.getTelefoneContato());
-        if(emailValidado){
-            cliente.setEmail(clienteDTO.getEmail());
-
-        }
-
+        cliente.setTelefoneContato(telefoneValidado);
+        cliente.setEmail(emailValidado);
         clienteRepository.persist(cliente);
         return cliente;
     }
@@ -99,7 +111,7 @@ public class ClienteService {
     public void  validarClienteSemEventos(Long clienteId) {
         if (eventosRepository.existsByClienteId(clienteId)) {
             throw new WebApplicationException(
-                    "Cliente possui eventos associados",
+                    "Cliente possui eventos associados",   // Mudar par o conflict ⚠️⚠️
                     Response.Status.CONFLICT
             );
         }
