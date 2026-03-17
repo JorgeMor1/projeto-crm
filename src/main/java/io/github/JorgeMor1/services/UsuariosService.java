@@ -3,6 +3,7 @@ package io.github.JorgeMor1.services;
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.domain.Usuarios;
 import io.github.JorgeMor1.dto.UsuariosDTO;
+import io.github.JorgeMor1.exception.BadRequestException;
 import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
 import io.github.JorgeMor1.repository.UsuarioRepository;
@@ -12,6 +13,8 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ApplicationScoped
 public class UsuariosService {
@@ -33,13 +36,25 @@ public class UsuariosService {
                 );
     }
 
+    private String validaEmailValido(String email){
+        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        Matcher matcher = pattern.matcher(email);
+        if(matcher.matches() && email != null){
+            return email.toLowerCase().trim();
+        } else {
+            throw  new BadRequestException("E-mail", email);
+        }
+
+    }
 
     public Usuarios createUser(UsuariosDTO usuariosDTO){
+        String emailValidado = validaEmailValido(usuariosDTO.getEmail());
         Usuarios usuario = new Usuarios();
         usuario.setLogin(usuariosDTO.getLogin());
         usuario.setNome(usuariosDTO.getNome());
         usuario.setSobrenome(usuariosDTO.getSobrenome());
-        usuario.setEmail(usuariosDTO.getEmail());
+        usuario.setEmail(emailValidado);
 
         Cargos cargo = validaCargo(usuariosDTO);
         usuario.setCargo(cargo);
