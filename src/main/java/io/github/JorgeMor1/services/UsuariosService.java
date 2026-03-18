@@ -20,10 +20,13 @@ import java.util.regex.Pattern;
 public class UsuariosService {
 
     @Inject
-    UsuarioRepository usuarioRepository = new UsuarioRepository();
+    UsuarioRepository usuarioRepository;
 
     @Inject
-    CargoRepository cargoRepository = new CargoRepository();
+    CargoRepository cargoRepository;
+
+    @Inject
+    PessoaValidationService pessoaValidationService;
 
 
     public Cargos validaCargo(UsuariosDTO usuariosDTO){
@@ -36,20 +39,11 @@ public class UsuariosService {
                 );
     }
 
-    private String validaEmailValido(String email){
-        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        Pattern pattern = Pattern.compile(EMAIL_REGEX);
-        Matcher matcher = pattern.matcher(email);
-        if(matcher.matches() && email != null){
-            return email.toLowerCase().trim();
-        } else {
-            throw  new BadRequestException("E-mail", email);
-        }
-
-    }
 
     public Usuarios createUser(UsuariosDTO usuariosDTO){
-        String emailValidado = validaEmailValido(usuariosDTO.getEmail());
+        pessoaValidationService.validaremailExistente(usuariosDTO.getEmail());
+        String emailValidado = pessoaValidationService.validaEmailValido(usuariosDTO.getEmail());
+
         Usuarios usuario = new Usuarios();
         usuario.setLogin(usuariosDTO.getLogin());
         usuario.setNome(usuariosDTO.getNome());
@@ -64,12 +58,14 @@ public class UsuariosService {
 
 
     public void updateUser(UsuariosDTO usuariosDTO, Long userId) {
+        pessoaValidationService.validaremailExistente(usuariosDTO.getEmail());
+        String emailValidado = pessoaValidationService.validaEmailValido(usuariosDTO.getEmail());
         Usuarios usuario = usuarioRepository.findByIdOptional(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário",userId));
         usuario.setLogin(usuariosDTO.getLogin());
         usuario.setNome(usuariosDTO.getNome());
         usuario.setSobrenome(usuariosDTO.getSobrenome());
-        usuario.setEmail(usuariosDTO.getEmail());
+        usuario.setEmail(emailValidado);
     }
 
     public void deleteUser(Long idUser){

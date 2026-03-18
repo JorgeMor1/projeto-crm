@@ -3,7 +3,7 @@ package io.github.JorgeMor1.services;
 import io.github.JorgeMor1.domain.Cliente;
 import io.github.JorgeMor1.dto.ClienteDTO;
 import io.github.JorgeMor1.exception.BadRequestException;
-import io.github.JorgeMor1.exception.CustomerDataException;
+import io.github.JorgeMor1.exception.ConflictException;
 import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
@@ -25,62 +25,20 @@ public class ClienteService {
     @Inject
     EventosRepository eventosRepository = new EventosRepository();
 
-    private void validarCpfExistente(String cpf) {
-        if (clienteRepository.buscaCpf(cpf)) {
-            throw new BadRequestException("CPF já existe ", cpf); // Mudar par o conflict ⚠️⚠️
-        }
-    }
+    @Inject
+    PessoaValidationService pessoaValidationService;
 
-    private void validaremailExistente(String email) {
-        if (clienteRepository.buscaEmail(email)) {
-            throw new BadRequestException("E-mail já existe ", email); // Mudar par o conflict ⚠️⚠️
-        }
-    }
 
-    private String validaCpfValido(String cpf){
-        String cpfFormatted = cpf.replaceAll("\\D","");
-        String CPF_REGEX = "^\\d{11}$";
-        Pattern pattern = Pattern.compile(CPF_REGEX);
-        Matcher matcher = pattern.matcher(cpfFormatted);
-
-        if (cpf != null && matcher.matches() && !cpfFormatted.matches("(\\d)\\1{10}")) {
-            return cpfFormatted;
-        }else {
-            throw new BadRequestException("Cpf: ", cpf);
-        }
-    }
-
-    private String validaEmailValido(String email){
-        String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        Pattern pattern = Pattern.compile(EMAIL_REGEX);
-        Matcher matcher = pattern.matcher(email);
-        if(matcher.matches() && email != null){
-            return email.toLowerCase().trim();
-        } else {
-            throw  new BadRequestException("E-mail", email);
-        }
-
-    }
-
-    private String  validaTelefone(String telefoneContato){
-        String TELEFONE_REGEX = "^\\(?(\\d{2})\\)?\\s?9?\\d{4}-?\\d{4}$";
-        Pattern pattern = Pattern.compile(TELEFONE_REGEX);
-        Matcher matcher = pattern.matcher(telefoneContato);
-        if (matcher.matches() && telefoneContato != null){
-            return telefoneContato.toLowerCase().trim();
-        }else {
-            throw  new BadRequestException("Telefone de contato", telefoneContato);
-        }
-    }
 
     //Criando cliente
     public Cliente createClient (ClienteDTO clienteDTO){
-        String cpfFormatted = validaCpfValido(clienteDTO.getCpf());
-        String emailValidado = validaEmailValido(clienteDTO.getEmail());
-        String telefoneValidado = validaTelefone(clienteDTO.getTelefoneContato());
+        String cpfFormatted = pessoaValidationService.validaCpfValido(clienteDTO.getCpf());
+        String emailValidado = pessoaValidationService.validaEmailValido(clienteDTO.getEmail());
+        String telefoneValidado = pessoaValidationService.validaTelefone(clienteDTO.getTelefoneContato());
 
-        validarCpfExistente(cpfFormatted);
-        validaremailExistente(clienteDTO.getEmail());
+        pessoaValidationService.validarCpfExistente(cpfFormatted);
+        pessoaValidationService.validaremailExistente(clienteDTO.getEmail());
+
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDTO.getNome());
         cliente.setCpf(cpfFormatted);
@@ -101,18 +59,24 @@ public class ClienteService {
     }
 
     public void atualizaCliente(Long id, ClienteDTO clienteDTO){
+        pessoaValidationService.validarCpfExistente(clienteDTO.getCpf());
+        pessoaValidationService.validaremailExistente(clienteDTO.getEmail());
+        String cpfFormatted = pessoaValidationService.validaCpfValido(clienteDTO.getCpf());
+        String emailValidado = pessoaValidationService.validaEmailValido(clienteDTO.getEmail());
+        String telefoneValidado = pessoaValidationService.validaTelefone(clienteDTO.getTelefoneContato());
+
         Cliente cliente = buscarClienteOuFalhar(id);
         cliente.setNome(clienteDTO.getNome());
-        cliente.setCpf(clienteDTO.getCpf());
-        cliente.setTelefoneContato(clienteDTO.getTelefoneContato());
-        cliente.setEmail(clienteDTO.getEmail());
+        cliente.setCpf(cpfFormatted);
+        cliente.setTelefoneContato(telefoneValidado);
+        cliente.setEmail(emailValidado);
     }
 
     public void  validarClienteSemEventos(Long clienteId) {
         if (eventosRepository.existsByClienteId(clienteId)) {
-            throw new WebApplicationException(
-                    "Cliente possui eventos associados",   // Mudar par o conflict ⚠️⚠️
-                    Response.Status.CONFLICT
+            throw new ConflictException(
+                    "possui eventos associados", clienteId
+
             );
         }
     }

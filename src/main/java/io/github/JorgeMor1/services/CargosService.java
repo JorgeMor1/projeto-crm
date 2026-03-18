@@ -2,7 +2,7 @@ package io.github.JorgeMor1.services;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.dto.CargoDTO;
-import io.github.JorgeMor1.exception.CargoNotFoundException;
+import io.github.JorgeMor1.exception.ConflictException;
 import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
 import io.quarkus.panache.common.Page;
@@ -24,7 +24,7 @@ public class CargosService {
 
         Optional<Cargos> cargoExistente = cargoRepository.find("nomeCargo", cargoFormatado).firstResultOptional();
         if (cargoExistente.isPresent()) {
-            throw new WebApplicationException("Já existe um cargo cadastrado com o nome: " + cargoFormatado, 409);
+            throw new ConflictException("Cargo", cargoFormatado);
         }
         Cargos cargo = new Cargos();
         cargo.setNomeCargo(cargoDTO.getNomeCargo().toUpperCase());
