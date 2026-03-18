@@ -5,7 +5,6 @@ import io.github.JorgeMor1.domain.Eventos;
 import io.github.JorgeMor1.domain.StatusEventos;
 import io.github.JorgeMor1.domain.Usuarios;
 import io.github.JorgeMor1.dto.EventosDTO;
-import io.github.JorgeMor1.exception.EventNotFoundException;
 import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.EventosRepository;
