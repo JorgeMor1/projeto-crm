@@ -41,8 +41,13 @@ public class UsuariosService {
 
 
     public Usuarios createUser(UsuariosDTO usuariosDTO){
-        pessoaValidationService.validaremailExistente(usuariosDTO.getEmail());
+
+        //Valida formato válido do e-mail
         String emailValidado = pessoaValidationService.validaEmailValido(usuariosDTO.getEmail());
+
+        //Valida e-mail e login já existentes no Banco
+        pessoaValidationService.validarEmailExistente(usuariosDTO.getEmail());
+        pessoaValidationService.validaLoginExistente(usuariosDTO.getLogin());
 
         Usuarios usuario = new Usuarios();
         usuario.setLogin(usuariosDTO.getLogin());
@@ -58,8 +63,13 @@ public class UsuariosService {
 
 
     public void updateUser(UsuariosDTO usuariosDTO, Long userId) {
-        pessoaValidationService.validaremailExistente(usuariosDTO.getEmail());
+        //Valida formato válido do e-mail
         String emailValidado = pessoaValidationService.validaEmailValido(usuariosDTO.getEmail());
+
+        //Valida e-mail e login já existentes no Banco
+        pessoaValidationService.validarEmailExistente(usuariosDTO.getEmail());
+        pessoaValidationService.validaLoginExistente(usuariosDTO.getLogin());
+
         Usuarios usuario = usuarioRepository.findByIdOptional(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário",userId));
         usuario.setLogin(usuariosDTO.getLogin());

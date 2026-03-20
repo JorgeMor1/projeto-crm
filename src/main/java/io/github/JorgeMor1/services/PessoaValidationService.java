@@ -22,9 +22,21 @@ public class PessoaValidationService {
         }
     }
 
-    protected void validaremailExistente(String email) {
+    protected void validarEmailExistente(String email) {
         if (clienteRepository.buscaEmail(email) || usuarioRepository.buscaEmail(email)) {
             throw new ConflictException("E-mail", email);
+        }
+    }
+
+    protected void validarTelefoneExistente(String telefone) {
+        if (clienteRepository.buscaTelefone(telefone) || usuarioRepository.buscaTelefone(telefone)) {
+            throw new ConflictException("Telefone", telefone);
+        }
+    }
+
+    protected void validaLoginExistente(String login) {
+        if (usuarioRepository.buscaLogin(login)) {
+            throw new ConflictException("Login", login);
         }
     }
 
@@ -53,7 +65,7 @@ public class PessoaValidationService {
 
     }
 
-    protected String  validaTelefone(String telefoneContato){
+    protected String  validaTelefoneValido(String telefoneContato){
         String TELEFONE_REGEX = "^\\(?(\\d{2})\\)?\\s?9?\\d{4}-?\\d{4}$";
         Pattern pattern = Pattern.compile(TELEFONE_REGEX);
         Matcher matcher = pattern.matcher(telefoneContato);

@@ -29,15 +29,16 @@ public class ClienteService {
     PessoaValidationService pessoaValidationService;
 
 
-
-    //Criando cliente
     public Cliente createClient (ClienteDTO clienteDTO){
+        //Valida formatação correta dos dados (CPF, E-mail e Telefone)
         String cpfFormatted = pessoaValidationService.validaCpfValido(clienteDTO.getCpf());
         String emailValidado = pessoaValidationService.validaEmailValido(clienteDTO.getEmail());
-        String telefoneValidado = pessoaValidationService.validaTelefone(clienteDTO.getTelefoneContato());
+        String telefoneValidado = pessoaValidationService.validaTelefoneValido(clienteDTO.getTelefoneContato());
 
+        //Valida  CPF, telefone e e-mail já existentes no Banco
         pessoaValidationService.validarCpfExistente(cpfFormatted);
-        pessoaValidationService.validaremailExistente(clienteDTO.getEmail());
+        pessoaValidationService.validarEmailExistente(clienteDTO.getEmail());
+        pessoaValidationService.validarTelefoneExistente(clienteDTO.getTelefoneContato());
 
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDTO.getNome());
@@ -59,11 +60,16 @@ public class ClienteService {
     }
 
     public void atualizaCliente(Long id, ClienteDTO clienteDTO){
-        pessoaValidationService.validarCpfExistente(clienteDTO.getCpf());
-        pessoaValidationService.validaremailExistente(clienteDTO.getEmail());
+
+        //Valida formatação correta dos dados (CPF, E-mail e Telefone)
         String cpfFormatted = pessoaValidationService.validaCpfValido(clienteDTO.getCpf());
         String emailValidado = pessoaValidationService.validaEmailValido(clienteDTO.getEmail());
-        String telefoneValidado = pessoaValidationService.validaTelefone(clienteDTO.getTelefoneContato());
+        String telefoneValidado = pessoaValidationService.validaTelefoneValido(clienteDTO.getTelefoneContato());
+
+        //Valida  CPF, telefone e e-mail já existentes no Banco
+        pessoaValidationService.validarCpfExistente(clienteDTO.getCpf());
+        pessoaValidationService.validarEmailExistente(clienteDTO.getEmail());
+        pessoaValidationService.validarTelefoneExistente(clienteDTO.getTelefoneContato());
 
         Cliente cliente = buscarClienteOuFalhar(id);
         cliente.setNome(clienteDTO.getNome());
