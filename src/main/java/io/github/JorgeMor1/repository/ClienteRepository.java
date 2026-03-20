@@ -21,4 +21,8 @@ public class ClienteRepository implements PanacheRepository<Cliente> {
     public boolean buscaEmail(String email) {
         return find("email", email).firstResultOptional().isPresent();
     }
+
+    public boolean buscaTelefone(String telefone) {
+        return find("telefone", telefone).firstResultOptional().isPresent();
+    }
 }
