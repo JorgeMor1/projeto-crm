@@ -4,11 +4,13 @@ import io.github.JorgeMor1.exception.BadRequestException;
 import io.github.JorgeMor1.exception.ConflictException;
 import io.github.JorgeMor1.repository.ClienteRepository;
 import io.github.JorgeMor1.repository.UsuarioRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@ApplicationScoped
 public class PessoaValidationService {
     @Inject
     ClienteRepository clienteRepository;
