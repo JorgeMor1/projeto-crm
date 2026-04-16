@@ -15,6 +15,11 @@ public class CargoResponseDTO {
         return new CargoResponseDTO(cargos.getCargo_id(), cargos.getNomeCargo());
     }
 
+    public CargoResponseDTO(Cargos cargos) {
+        this.idCargo = cargos.getCargo_id();
+        this.nomeCargo = cargos.getNomeCargo();
+    }
+
     public Long getIdCargo() {
         return idCargo;
     }

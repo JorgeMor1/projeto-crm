@@ -14,17 +14,15 @@ public class ClienteRepository implements PanacheRepository<Cliente> {
     }
 
     public boolean buscaCpf(String cpf) {
-         return  find("cpf", cpf)
-                 .stream()
-                 .findAny()
-                 .isPresent();
+         return  find("cpf", cpf).firstResultOptional().isPresent();
 
     }
 
     public boolean buscaEmail(String email) {
-        return find("email", email)
-                .stream()
-                .findAny()
-                .isPresent();
+        return find("email", email).firstResultOptional().isPresent();
+    }
+
+    public boolean buscaTelefone(String telefone) {
+        return find("telefone", telefone).firstResultOptional().isPresent();
     }
 }

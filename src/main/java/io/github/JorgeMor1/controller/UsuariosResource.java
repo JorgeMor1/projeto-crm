@@ -2,6 +2,7 @@ package io.github.JorgeMor1.controller;
 
 import io.github.JorgeMor1.domain.Usuarios;
 import io.github.JorgeMor1.dto.UsuariosDTO;
+import io.github.JorgeMor1.dto.UsuariosResponseDTO;
 import io.github.JorgeMor1.repository.UsuarioRepository;
 import io.github.JorgeMor1.services.ClienteService;
 import io.github.JorgeMor1.services.UsuariosService;
@@ -12,6 +13,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
 
 @Path("api/v1/usuarios")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -47,9 +50,16 @@ public class UsuariosResource {
     }
 
     @GET
-    public Response listAllUsers(){
-        PanacheQuery<Usuarios> allUsers = usuarioRepository.findAll();
-        return Response.ok(allUsers.list()).build();
+    public Response listAllUsers(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size)
+    {
+        List<UsuariosResponseDTO> response = usuariosService
+                .listAllUsers(page, size)
+                .stream()
+                .map(UsuariosResponseDTO::new)
+                .toList();
+        return Response.ok(response).build();
     }
 
     @DELETE

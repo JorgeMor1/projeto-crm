@@ -2,10 +2,10 @@ package io.github.JorgeMor1.services;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.dto.CargoDTO;
-import io.github.JorgeMor1.dto.CargoResponseDTO;
-import io.github.JorgeMor1.exception.CargoNotFoundException;
-import io.github.JorgeMor1.exception.CustomerNotFoundException;
+import io.github.JorgeMor1.exception.ConflictException;
+import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -17,14 +17,14 @@ import java.util.Optional;
 public class CargosService {
 
     @Inject
-    CargoRepository cargoRepository = new CargoRepository();
+    CargoRepository cargoRepository;
 
     public Cargos createPosition(CargoDTO cargoDTO){
         String cargoFormatado = cargoDTO.getNomeCargo().toUpperCase();
 
         Optional<Cargos> cargoExistente = cargoRepository.find("nomeCargo", cargoFormatado).firstResultOptional();
         if (cargoExistente.isPresent()) {
-            throw new WebApplicationException("Já existe um cargo cadastrado com o nome: " + cargoFormatado, 409);
+            throw new ConflictException("Cargo", cargoFormatado);
         }
         Cargos cargo = new Cargos();
         cargo.setNomeCargo(cargoDTO.getNomeCargo().toUpperCase());
@@ -34,21 +34,18 @@ public class CargosService {
 
     public Cargos updateposition(CargoDTO cargoDTO, Long idCargo){
         Cargos cargosId = cargoRepository.findByIdOptional(idCargo)
-                .orElseThrow(() -> new CargoNotFoundException(idCargo));
+                .orElseThrow(() -> new ResourceNotFoundException("Cargo",idCargo));
         cargosId.setNomeCargo(cargoDTO.getNomeCargo().toUpperCase());
         return cargosId;
     }
 
-    public void deletePosition(Long id){
-        Cargos cargoId = cargoRepository.findByIdOptional(id)
-                        .orElseThrow(() -> new CargoNotFoundException(id));
+    public void deletePosition(Long idCargo){
+        Cargos cargoId = cargoRepository.findByIdOptional(idCargo)
+                        .orElseThrow(() -> new ResourceNotFoundException("Cargo",idCargo));
         cargoRepository.delete(cargoId);
     }
 
-    public List<CargoResponseDTO> listAll(){
-        return cargoRepository.listAll()
-                .stream()
-                .map(CargoResponseDTO::cargoResponseDTO)
-                .toList();
+    public List<Cargos> listAll(int page, int size){
+        return cargoRepository.findAll().page(Page.of(page, size)).list();
     }
 }

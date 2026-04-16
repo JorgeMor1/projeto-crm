@@ -43,16 +43,26 @@ public class EventosResource {
     @POST
     @Transactional
     public Response createEvent(EventosDTO eventosDTO){
+        Eventos eventos = eventService.criaEventos(eventosDTO.getClienteId(), eventosDTO);
+        EventosResponseDTO responseDTO = new EventosResponseDTO(eventos);
+
         return Response
                 .status(Response.Status.CREATED)
-                .entity(eventService.criaEventos(eventosDTO.getClienteId(), eventosDTO))
+                .entity(responseDTO)
                 .build();
 
     }
 
     @GET
-    public Response listAllEvents(){
-        List<EventosResponseDTO> eventos = eventService.listAll();
+    public Response listAllEvents(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size
+    ){
+        List<EventosResponseDTO> eventos =
+                eventService.listAllEventos(page, size)
+                        .stream()
+                        .map(EventosResponseDTO::new)
+                        .toList();
         return Response.ok(eventos).build();
     }
 
