@@ -27,6 +27,7 @@ public class EventService {
     @Inject
     ClienteService clienteService = new ClienteService();
 
+
     public Eventos buscaClienteId(Long idCliente){
         return eventosRepository.findByIdOptional(idCliente)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente", idCliente));
@@ -60,6 +61,11 @@ public class EventService {
             evento.setUsuario(usuarioId);
 
             return evento;
+    }
+
+    public Eventos buscaEventoPorId(Long id){
+        return eventosRepository.findByIdOptional(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento", id));
     }
 
     public List<Eventos> listAllEventos(int page, int size) {
