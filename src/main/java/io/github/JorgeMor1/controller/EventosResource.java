@@ -66,6 +66,15 @@ public class EventosResource {
         return Response.ok(eventos).build();
     }
 
+    @GET
+    @Path("{id}")
+    public Response listEventById(Long id){
+        Eventos eventos = eventService.buscaEventoPorId(id);
+        EventosResponseDTO eventosResponseDTO = new EventosResponseDTO(eventos);
+        return Response.ok(eventosResponseDTO).build();
+
+    }
+
     /*Atualiza o status do evento, enviado o id do cliente como parâmetro
 
     * Necessário validar o id do usuário e o número do evento
