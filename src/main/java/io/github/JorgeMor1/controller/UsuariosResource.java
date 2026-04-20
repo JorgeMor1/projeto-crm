@@ -62,6 +62,14 @@ public class UsuariosResource {
         return Response.ok(response).build();
     }
 
+    @GET
+    @Path("{id}")
+    public Response findUserById(@PathParam("id") Long userId){
+        Usuarios usuario = usuariosService.findUserById(userId);
+        UsuariosResponseDTO usuariosResponseDTO = new UsuariosResponseDTO(usuario);
+        return Response.ok(usuariosResponseDTO).build();
+    }
+
     @DELETE
     @Transactional
     @Path("{id}")

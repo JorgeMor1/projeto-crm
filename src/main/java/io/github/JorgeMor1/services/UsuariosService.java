@@ -87,4 +87,9 @@ public class UsuariosService {
     public List<Usuarios> listAllUsers(int page, int size){
          return usuarioRepository.findAll().page(Page.of(page, size)).list();
     }
+
+    public Usuarios findUserById(Long id){
+        return usuarioRepository.findByIdOptional(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", id));
+    }
 }
