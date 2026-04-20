@@ -57,6 +57,15 @@ public class CargoResource {
         return Response.ok(response).build();
     }
 
+    @GET
+    @Path("{id}")
+    public Response listPositionById(@PathParam("id") Long id){
+        Cargos cargos = cargosService.listPositionById(id);
+        CargoResponseDTO cargoResponseDTO = new CargoResponseDTO(cargos);
+        return Response.ok(cargoResponseDTO).build();
+
+    }
+
     @PUT
     @Path("{id}")
     @Transactional
