@@ -48,4 +48,9 @@ public class CargosService {
     public List<Cargos> listAll(int page, int size){
         return cargoRepository.findAll().page(Page.of(page, size)).list();
     }
+
+    public Cargos listPositionById(Long idCargo){
+        return cargoRepository.findByIdOptional(idCargo)
+                .orElseThrow(() -> new ResourceNotFoundException("Cargo", idCargo));
+    }
 }
