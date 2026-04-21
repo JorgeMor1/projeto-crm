@@ -60,7 +60,8 @@ public class ClienteResource {
     @Path("{id}")
     public Response getCliente(@PathParam("id") Long id){
         Cliente cliente = clientService.buscarClienteOuFalhar(id);
-        return Response.ok(cliente).build();
+        ClientResponseDTO clientResponseDTO = new ClientResponseDTO(cliente);
+        return Response.ok(clientResponseDTO).build();
     }
 
     @PUT
