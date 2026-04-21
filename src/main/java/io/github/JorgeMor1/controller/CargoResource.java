@@ -70,8 +70,9 @@ public class CargoResource {
     @Path("{id}")
     @Transactional
     public Response updatePosition(@PathParam("id") Long id, CargoDTO cargoDTO){
-        cargosService.updateposition(cargoDTO, id);
-        return Response.ok().build();
+        Cargos cargos = cargosService.updateposition(cargoDTO, id);
+        CargoResponseDTO cargoResponseDTO = new CargoResponseDTO(cargos);
+        return Response.ok(cargoResponseDTO).build();
 
     }
 
