@@ -68,8 +68,9 @@ public class ClienteResource {
     @Path("{id}")
     @Transactional
     public Response updateClient(@PathParam("id") Long id, ClienteDTO clienteDTO){
-        clientService.atualizaCliente(id, clienteDTO);
-        return Response.ok().build();
+        Cliente cliente = clientService.atualizaCliente(id, clienteDTO);
+        ClientResponseDTO clientResponseDTO = new ClientResponseDTO(cliente);
+        return Response.ok(clientResponseDTO).build();
     }
 
 
