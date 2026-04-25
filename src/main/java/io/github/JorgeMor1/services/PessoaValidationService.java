@@ -18,9 +18,8 @@ public class PessoaValidationService {
     @Inject
     UsuarioRepository usuarioRepository;
 
-
     protected void validarCpfExistente(String cpf) {
-        if (clienteRepository.buscaCpf(cpf)) {
+        if (clienteRepository.buscaCpf(cpf) || usuarioRepository.buscaCpf(cpf)) {
             throw new ConflictException("CPF", cpf);
         }
     }
@@ -31,9 +30,8 @@ public class PessoaValidationService {
         }
     }
 
-
     protected void validarTelefoneExistente(String telefone) {
-        if (clienteRepository.buscaTelefone(telefone)) {
+        if (clienteRepository.buscaTelefone(telefone) || usuarioRepository.buscaTelefone(telefone)) {
             throw new ConflictException("Telefone", telefone);
         }
     }

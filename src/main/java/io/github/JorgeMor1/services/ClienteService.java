@@ -59,7 +59,7 @@ public class ClienteService {
         return clienteRepository.findAll().page(Page.of(page, size)).list();
     }
 
-    public Cliente atualizaCliente(Long id, ClienteDTO clienteDTO){
+    public void atualizaCliente(Long id, ClienteDTO clienteDTO){
 
         //Valida formatação correta dos dados (CPF, E-mail e Telefone)
         String cpfFormatted = pessoaValidationService.validaCpfValido(clienteDTO.getCpf());
@@ -76,8 +76,6 @@ public class ClienteService {
         cliente.setCpf(cpfFormatted);
         cliente.setTelefoneContato(telefoneValidado);
         cliente.setEmail(emailValidado);
-
-        return  cliente;
     }
 
     public void  validarClienteSemEventos(Long clienteId) {

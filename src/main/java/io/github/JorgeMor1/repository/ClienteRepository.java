@@ -23,6 +23,6 @@ public class ClienteRepository implements PanacheRepository<Cliente> {
     }
 
     public boolean buscaTelefone(String telefone) {
-        return find("telefoneContato", telefone).firstResultOptional().isPresent();
+        return find("telefone", telefone).firstResultOptional().isPresent();
     }
 }
