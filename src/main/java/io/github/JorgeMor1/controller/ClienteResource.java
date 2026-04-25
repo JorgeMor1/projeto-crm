@@ -60,17 +60,15 @@ public class ClienteResource {
     @Path("{id}")
     public Response getCliente(@PathParam("id") Long id){
         Cliente cliente = clientService.buscarClienteOuFalhar(id);
-        ClientResponseDTO clientResponseDTO = new ClientResponseDTO(cliente);
-        return Response.ok(clientResponseDTO).build();
+        return Response.ok(cliente).build();
     }
 
     @PUT
     @Path("{id}")
     @Transactional
     public Response updateClient(@PathParam("id") Long id, ClienteDTO clienteDTO){
-        Cliente cliente = clientService.atualizaCliente(id, clienteDTO);
-        ClientResponseDTO clientResponseDTO = new ClientResponseDTO(cliente);
-        return Response.ok(clientResponseDTO).build();
+        clientService.atualizaCliente(id, clienteDTO);
+        return Response.ok().build();
     }
 
 
