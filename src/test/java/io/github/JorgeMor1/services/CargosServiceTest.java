@@ -106,6 +106,7 @@ class CargosServiceTest {
     @Test
     void deletePosition_ShouldThrowException_WhenCargoDoesNotExist(){
         Long idInexistente = 99L;
+
         Mockito.when(cargoRepository.findByIdOptional(idInexistente))
                 .thenReturn(Optional.empty());
 
@@ -116,11 +117,32 @@ class CargosServiceTest {
 
     }
 
-    /*@Test
-    void listAll() {
+
+
+    @Test
+    void listPosition_ShouldReturnPosition_WhenIdExists() {
+        cargoExistente.setNomeCargo("Vendedor Teste22");
+
+        Mockito.when(cargoRepository.findByIdOptional(cargoId))
+                .thenReturn(Optional.of(cargoExistente));
+
+        Cargos resultado = cargosService.listPositionById(cargoId);
+
+        assertNotNull(resultado);
+        assertEquals("Vendedor Teste22", resultado.getNomeCargo());
+        Mockito.verify(cargoRepository).findByIdOptional(cargoId);
+
     }
 
     @Test
-    void listPositionById() {
-    }*/
+    void listPosition_SholdThrowException_WhenCargoDoesNotExist(){
+        Mockito.when(cargoRepository.findByIdOptional(cargoId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cargosService.listPositionById(cargoId);
+
+        });
+        Mockito.verify(cargoRepository).findByIdOptional(cargoId);
+    }
 }
