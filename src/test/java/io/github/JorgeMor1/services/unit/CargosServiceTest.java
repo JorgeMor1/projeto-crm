@@ -1,14 +1,14 @@
-package io.github.JorgeMor1.services;
+package io.github.JorgeMor1.services.unit;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.dto.CargoDTO;
 import io.github.JorgeMor1.exception.ConflictException;
 import io.github.JorgeMor1.exception.ResourceNotFoundException;
 import io.github.JorgeMor1.repository.CargoRepository;
+import io.github.JorgeMor1.services.CargosService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.smallrye.config.inject.ConfigException;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
