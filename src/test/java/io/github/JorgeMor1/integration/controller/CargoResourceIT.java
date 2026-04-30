@@ -30,12 +30,17 @@ class CargoResourceIT {
         cargoRepository.deleteAll();
     }
 
+    private CargoDTO criaCargoDTO(String nome){
+        CargoDTO dto = new CargoDTO();
+        dto.setNomeCargo(nome);
+                return dto;
+    }
+
+
 
     @Test
     void shouldCreateCargoSuccessfully() {
-        CargoDTO dto = new CargoDTO();
-        dto.setNomeCargo("Desenvolvedor");
-
+         CargoDTO dto = criaCargoDTO("Desenvolvedor");
 
         given()
                 .contentType(ContentType.JSON)
@@ -43,8 +48,9 @@ class CargoResourceIT {
                 .when()
                 .post("/api/v1/cargos")
                 .then()
-                .statusCode(201);
-        //.body("nomeCargo", is("DESENVOLVEDOR"));
+                .statusCode(201)
+                .body("nomeCargo", is("DESENVOLVEDOR"));
+
         Cargos cargoSalvo = cargoRepository.find("nomeCargo", "DESENVOLVEDOR").firstResult();
 
         assertNotNull(cargoSalvo);
@@ -53,9 +59,7 @@ class CargoResourceIT {
 
     @Test
     void shouldReturn409WhenTryingToCreateDuplicateCargo() {
-        CargoDTO dto = new CargoDTO();
-        dto.setNomeCargo("Desenvolvedor");
-
+        CargoDTO dto = criaCargoDTO("Desenvolvedor");
         given()
                 .contentType(ContentType.JSON)
                 .body(dto)
@@ -78,6 +82,36 @@ class CargoResourceIT {
 
     }
 
+    @Test
+    void shouldUpdatedCargoSuccessfully(){
+        CargoDTO dto = criaCargoDTO("Desenvolvedor");
+        Long id =
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/cargos")
+                .then()
+                .statusCode(201)
+                .extract()
+                .jsonPath()
+                .getLong("idCargo");
+        //atualizar o cargo
+        CargoDTO dtoUpdate = criaCargoDTO("NOVO VENDEDOR");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(dtoUpdate)
+                .when()
+                .put("/api/v1/cargos/"+ id)
+                .then()
+                .statusCode(200);
+        Cargos cargoAtualizado = cargoRepository.findById(id);
+
+        assertNotNull(cargoAtualizado);
+        assertEquals("NOVO VENDEDOR", cargoAtualizado.getNomeCargo());
+
+    }
 
 
 
