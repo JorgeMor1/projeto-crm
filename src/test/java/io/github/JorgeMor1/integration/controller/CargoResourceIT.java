@@ -2,6 +2,7 @@ package io.github.JorgeMor1.integration.controller;
 
 import io.github.JorgeMor1.domain.Cargos;
 import io.github.JorgeMor1.dto.CargoDTO;
+import io.github.JorgeMor1.exception.ConflictException;
 import io.github.JorgeMor1.repository.CargoRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -10,10 +11,11 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @QuarkusTest
@@ -28,6 +30,7 @@ class CargoResourceIT {
         cargoRepository.deleteAll();
     }
 
+
     @Test
     void shouldCreateCargoSuccessfully() {
         CargoDTO dto = new CargoDTO();
@@ -37,16 +40,46 @@ class CargoResourceIT {
         given()
                 .contentType(ContentType.JSON)
                 .body(dto)
-        .when()
+                .when()
                 .post("/api/v1/cargos")
-        .then()
-                    .statusCode(201);
-                    //.body("nomeCargo", is("DESENVOLVEDOR"));
+                .then()
+                .statusCode(201);
+        //.body("nomeCargo", is("DESENVOLVEDOR"));
         Cargos cargoSalvo = cargoRepository.find("nomeCargo", "DESENVOLVEDOR").firstResult();
 
         assertNotNull(cargoSalvo);
         assertEquals("DESENVOLVEDOR", cargoSalvo.getNomeCargo());
     }
+
+    @Test
+    void shouldReturn409WhenTryingToCreateDuplicateCargo() {
+        CargoDTO dto = new CargoDTO();
+        dto.setNomeCargo("Desenvolvedor");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+        .when()
+                .post("/api/v1/cargos")
+        .then()
+                .statusCode(201);
+        given()
+                .contentType(ContentType.JSON)
+                .body(dto)
+                .when()
+                .post("/api/v1/cargos")
+                .then()
+                .statusCode(409);
+
+        List<Cargos> cargos = cargoRepository.list("nomeCargo", "DESENVOLVEDOR");
+
+        assertEquals(1, cargos.size());
+
+
+    }
+
+
+
 
     /*@Test
     void listAllCargos() {
